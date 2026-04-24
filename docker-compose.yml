@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    build: ./mi-api
+    ports:
+      - "3000:3000"
+
+  client:
+    build: ./mi-front
+    ports: 
+      - "3001:3001"
+    depends_on:
+      - app
