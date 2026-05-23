@@ -63,8 +63,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=unidasp-1
-            -Dsonar.organization=diego
+            -Dsonar.projectKey=unidasp-1_docker-testing
+            -Dsonar.organization=unidasp-1
             -Dsonar.sources=mi-api/src,mi-front
             -Dsonar.javascript.environments=browser,node
             -Dsonar.exclusions=**/node_modules/**,**/bun.lock
