@@ -18,6 +18,11 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Install dependencies
+        run: |
+          cd mi-api && bun install
+          cd ../mi-front && bun install
+
       - name: Install Snyk CLI
         run: npm install -g snyk
 
@@ -26,7 +31,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk auth $SNYK_TOKEN
 
-      - name: Snyk test Bun dependencies (API & Front)
+      - name: Snyk test Bun dependencies
         run: |
           echo "Analizando mi-api..."
           snyk test ./mi-api --severity-threshold=high || true
@@ -38,8 +43,8 @@ jobs:
 
       - name: Snyk Container Scan
         run: |
-          snyk container test docker-testing-mi-api --file=mi-api/Dockerfile || true
-          snyk container test docker-testing-mi-front --file=mi-front/Dockerfile || true
+          snyk container test docker-testing-app --file=mi-api/Dockerfile || true
+          snyk container test docker-testing-client --file=mi-front/Dockerfile || true
 
   sonar-analysis:
     name: SonarCloud Analysis
