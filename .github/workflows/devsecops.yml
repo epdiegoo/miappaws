@@ -1,0 +1,65 @@
+name: Bun & Docker DevSecOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  snyk-scan:
+    name: Snyk Security & Container Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk CLI
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk auth $SNYK_TOKEN
+
+      - name: Snyk test Bun dependencies (API & Front)
+        run: |
+          echo "Analizando mi-api..."
+          snyk test ./mi-api --severity-threshold=high || true
+          echo "Analizando mi-front..."
+          snyk test ./mi-front --severity-threshold=high || true
+
+      - name: Build Docker Images via Compose
+        run: docker compose build
+
+      - name: Snyk Container Scan
+        run: |
+          snyk container test docker-testing-mi-api --file=mi-api/Dockerfile || true
+          snyk container test docker-testing-mi-front --file=mi-front/Dockerfile || true
+
+  sonar-analysis:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: snyk-scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=unidasp-1
+            -Dsonar.organization=diego
+            -Dsonar.sources=mi-api/src,mi-front/src
+            -Dsonar.javascript.environments=browser,node
+            -Dsonar.exclusions=**/node_modules/**,**/bun.lock
