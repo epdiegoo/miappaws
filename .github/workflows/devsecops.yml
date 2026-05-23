@@ -65,6 +65,6 @@ jobs:
           args: >
             -Dsonar.projectKey=unidasp-1
             -Dsonar.organization=diego
-            -Dsonar.sources=mi-api/src,mi-front/src
+            -Dsonar.sources=mi-api/src,mi-front
             -Dsonar.javascript.environments=browser,node
             -Dsonar.exclusions=**/node_modules/**,**/bun.lock
