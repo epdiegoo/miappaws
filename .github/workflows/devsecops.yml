@@ -106,7 +106,7 @@ steps:
 
   - name: Sonar Quality Gate
     uses: sonarsource/sonarqube-quality-gate-action@master
-    timeout-minutes: 5
+    timeout-minutes: 6
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
