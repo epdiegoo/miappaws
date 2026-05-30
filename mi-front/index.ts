@@ -11,7 +11,7 @@ app.get("/api/*pathPart", async (req, res) => {
     : req.params.pathPart;
 
   const query = new URLSearchParams(req.query).toString();
-  const url = `http://app:3000/${pathPart}${query ? `?${query}` : ""}`;
+  const url = `https://docker-testing-3ath.onrender.com/${pathPart}${query ? `?${query}` : ""}`;
 
   try {
     const response = await fetch(url);
@@ -26,5 +26,5 @@ app.get("/api/*pathPart", async (req, res) => {
 });
 
 app.listen(3001, "0.0.0.0", () => {
-  console.log("http://localhost:3001");
+  console.log("https://docker-testing-3ath.onrender.com");
 });
