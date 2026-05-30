@@ -37,6 +37,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          cd mi-api && bun install
+          cd ../mi-front && bun install
+
       - name: Install Snyk CLI
         run: npm install -g snyk
 
@@ -47,11 +57,14 @@ jobs:
 
       - name: Scan API & Frontend
         run: |
-          snyk test --file=mi-api/package.json --package-manager=npm --severity-threshold=high
-          snyk test --file=mi-front/package.json --package-manager=npm --severity-threshold=high
+          snyk test --file=mi-api/package.json --severity-threshold=high
+          snyk test --file=mi-front/package.json --severity-threshold=high
 
       - name: Build Docker Images
         run: docker compose build
+      
+      - name: Snyk Container Scan API
+       run: snyk container test docker-testing-app --severity-threshold=high
 
   sonar-analysis:
     name: SonarCloud Analysis
