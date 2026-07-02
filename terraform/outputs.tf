@@ -36,12 +36,12 @@ output "ecr_frontend_repository_url" {
 
 output "vpc_id" {
   description = "ID de la VPC"
-  value       = aws_vpc.main.id
+  value       = data.aws_vpc.main.id
 }
 
 output "public_subnet_ids" {
   description = "IDs de las subnets publicas"
-  value       = aws_subnet.public[*].id
+  value       = data.aws_subnet.public[*].id
 }
 
 output "cloudwatch_log_group_name" {

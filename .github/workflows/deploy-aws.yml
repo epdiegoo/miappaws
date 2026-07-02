@@ -131,7 +131,14 @@ jobs:
           done
 
       - name: Deploy application to Kubernetes
-        run: kubectl apply -f k8s/rendered/
+        run: |
+          kubectl apply -f k8s/rendered/namespace.yaml
+          kubectl wait --for=condition=ready namespace/docker-testing --timeout=10s || true
+          kubectl apply -f k8s/rendered/configmap.yaml
+          kubectl apply -f k8s/rendered/api-deployment.yaml
+          kubectl apply -f k8s/rendered/api-service.yaml
+          kubectl apply -f k8s/rendered/frontend-deployment.yaml
+          kubectl apply -f k8s/rendered/frontend-service.yaml
 
       - name: Wait for application rollout
         run: |
