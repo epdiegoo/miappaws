@@ -147,31 +147,13 @@ jobs:
 
       - name: Print external endpoints
         run: |
-          echo "Waiting for frontend LoadBalancer..."
-          kubectl wait --for=condition=available --timeout=600s \
-            service/mi-front -n docker-testing
-
-          FRONTEND_HOST=""
-          for i in $(seq 1 60); do
-            FRONTEND_HOST=$(kubectl get svc mi-front -n docker-testing \
-              -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{.status.loadBalancer.ingress[0].ip}')
-            if [ -n "$FRONTEND_HOST" ]; then
-              break
-            fi
-            echo "Attempt ${i}/60: LoadBalancer not ready yet..."
-            sleep 15
-          done
-
-          GRAFANA_HOST=""
-          for i in $(seq 1 60); do
-            GRAFANA_HOST=$(kubectl get svc kube-prometheus-stack-grafana -n monitoring \
-              -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
-            if [ -n "$GRAFANA_HOST" ]; then
-              break
-            fi
-            echo "Attempt ${i}/60: Grafana LoadBalancer not ready yet..."
-            sleep 15
-          done
+          echo "Getting external endpoints..."
+          
+          FRONTEND_HOST=$(kubectl get svc mi-front -n docker-testing \
+            -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{.status.loadBalancer.ingress[0].ip}')
+          
+          GRAFANA_HOST=$(kubectl get svc kube-prometheus-stack-grafana -n monitoring \
+            -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
 
           echo ""
           echo "========================================"
