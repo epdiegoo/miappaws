@@ -26,12 +26,12 @@ output "cluster_certificate_authority_data" {
 
 output "ecr_api_repository_url" {
   description = "URL del repositorio ECR de la API"
-  value       = aws_ecr_repository.api.repository_url
+  value       = data.aws_ecr_repository.api.repository_url
 }
 
 output "ecr_frontend_repository_url" {
   description = "URL del repositorio ECR del frontend"
-  value       = aws_ecr_repository.frontend.repository_url
+  value       = data.aws_ecr_repository.frontend.repository_url
 }
 
 output "vpc_id" {
@@ -46,5 +46,5 @@ output "public_subnet_ids" {
 
 output "cloudwatch_log_group_name" {
   description = "Nombre del log group de CloudWatch para EKS"
-  value       = aws_cloudwatch_log_group.eks_cluster.name
+  value       = data.aws_cloudwatch_log_group.eks_cluster.name
 }

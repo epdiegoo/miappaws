@@ -18,8 +18,7 @@ resource "aws_eks_cluster" "main" {
   ]
 
   depends_on = [
-    aws_iam_role_policy_attachment.eks_cluster_policy,
-    aws_cloudwatch_log_group.eks_cluster
+    data.aws_cloudwatch_log_group.eks_cluster
   ]
 
   tags = merge(local.common_tags, {
@@ -42,11 +41,7 @@ resource "aws_eks_node_group" "main" {
   instance_types = [var.node_instance_type]
   capacity_type  = "ON_DEMAND"
 
-  depends_on = [
-    aws_iam_role_policy_attachment.eks_worker_node_policy,
-    aws_iam_role_policy_attachment.eks_cni_policy,
-    aws_iam_role_policy_attachment.eks_container_registry_read_only
-  ]
+  depends_on = []
 
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-nodes"
