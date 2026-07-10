@@ -5,4 +5,5 @@ metadata:
   namespace: docker-testing
 data:
   API_BASE_URL: "http://mi-api:3000"
+  REACT_APP_API_URL: "http://mi-api:3000"  # <--- Agregamos esta por si acaso
   PORT: "3001"
